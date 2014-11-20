@@ -5,7 +5,7 @@
 
 
         function findVectorRadin(v1, v2) {
-            var cos = (v1.x * v2.x + v1.y * v2.y) / (Math.sqrt(v1.x * v1.x + v1.y * v1.y) * Math.sqrt(v2.x * v2.x + v2.y * v2.y));
+            var cos = (v1.x * v2.x + v1.y * v2.y) / (crossProduct(v1) * crossProduct(v2));
             return Math.acos(cos);
         };
 
@@ -19,10 +19,21 @@
             return (temp < 0);
         };
 
+        var crossProduct = function (v) {
+            return Math.sqrt(v.x * v.x + v.y * v.y);
+        };
         var getVector = function (p, center) {
             return { x: p.x - center.x, y: p.y - center.y };
         };
 
+        var rotateVector = function (vector, theta) {
+            var nx = vector.x * Math.cos(theta) - vector.y * Math.sin(theta);
+            var ny = vector.y * Math.cos(theta) - vector.x * Math.sin(theta);
+            return { x: nx, y: ny };
+        };
+        var getPoint = function (vector, center) {
+            return { x: vector.x + center.x, y: vector.y + center.y };
+        };
         var angle2 = findVectorAngle({ x: -2, y: 2 }, { x: 2, y: 2 });
 
         alert(angle2);
@@ -52,6 +63,7 @@
         var center = null;
 
         var original = null;
+        var length = null;
         var adjustRotatePosition = function ($e, degree) {
             var rect = getRectangle($e);
             var $r = $("#rotate");
@@ -59,22 +71,14 @@
             var halfWdith = (rect.width / 2);
             var halfHeight = rect.height / 2;
             center = { x: rect.left + halfWdith, y: rect.top + halfHeight };
-            // original = { x: center.x, y: center.y - halfHeight };
-            console.log(center);
 
             var rotateAtCenter = { x: halfWdith + 20, y: halfHeight + 20 };
-            rotateOriginal = getPageCoordinate(rotateAtCenter, center);
-            original = rotateOriginal;
+            length = crossProduct(rotateAtCenter);
+            original = getPageCoordinate(rotateAtCenter, center);
 
-            $r.css({ left: rotateOriginal.x - 10 + "px", top: rotateOriginal.y - 10 + "px" });//减掉自己宽 高的一半，让原点可以对齐
+            $r.css({ left: original.x - 10 + "px", top: original.y - 10 + "px" });//减掉自己宽 高的一半，让原点可以对齐
 
-            var tanr = rect.height / rect.width;
-            var cosr = Math.sqrt(1 / (Math.pow(tanr, 2) + 1));
 
-            var radian = Math.acos(cosr);
-            var degree = radian / Math.PI * 180;
-            var r = Math.sqrt(Math.pow(rect.width / 2, 2) + Math.pow(rect.height / 2));
-            var r = r + 10;
         };
 
         $(function () {
@@ -88,14 +92,19 @@
                 var newV = getVector(newP, center);
                 var oldV = getVector(original, center);
                 angle = findVectorAngle(newV, oldV);
+
+                var newLength = crossProduct(newV);
+                var newX = newV.x * length / newLength;
+                var newY = newV.y * length / newLength;
+
+                var r = getPoint({ x: newX, y: newY }, center);
+                var $r = $("#rotate");
+                $r.css({ left: r.x - 10 + "px", top: r.y - 10 + "px" });
                 if (angleLargerThanPi(oldV, newV)) {
                     angle = 360 - angle;
                 }
-
                 $("#angle1").html(angle);
-                //     }
-
-                $("#angle2").html(angle);
+                $("#vector1").html(newV.x + " " + newV.y);
                 $("#box1").css("transform", "rotate(" + angle + "deg)");
             })
 
@@ -118,7 +127,7 @@
 
     <div id="pageCoordinate">00</div>
     <div id="angle1">0</div>
-    <div id="angle2">0</div>
+    <div id="vector1">0</div>
 </body>
 
 </html>
