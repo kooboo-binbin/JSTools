@@ -1,4 +1,4 @@
-<html>
+Ôªø<html>
 <head>
     <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
     <script>
@@ -15,7 +15,19 @@
         var angle = findAngle({ x: 4, y: 0 }, { x: 2, y: 2 }, { x: 0, y: 0 });
         //var angle = findAngle({ x: 4, y: 0 }, { x: 2, y: 2 }, { x: 4, y: 2 });
 
-        // alert(angle);
+        function findVectorRadin(v1, v2) {
+            var cos = (v1.x * v2.x + v1.y * v2.y) / (Math.sqrt(v1.x * v1.x + v1.y * v1.y) * Math.sqrt(v2.x * v2.x + v2.y * v2.y));
+            return Math.acos(cos);
+        };
+
+        function findVectorAngle(v1, v2) {
+            var radin = findVerctorRadin(v1,v2);
+            return angle = Math.round(radin / Math.PI * 180);
+        };
+
+        var angle2 = findVectorAngle({ x: -2, y: 2 }, { x: 2, y: 2 });
+
+        alert(angle2);
 
 
 
@@ -36,6 +48,10 @@
             return { x: p.x + center.x, y: center.y - p.y };
         };
 
+        var isPointOnLeft = function (a, b, c) {
+
+        };
+
         var center = null;
 
         var original = null;
@@ -46,13 +62,14 @@
             var halfWdith = (rect.width / 2);
             var halfHeight = rect.height / 2;
             center = { x: rect.left + halfWdith, y: rect.top + halfHeight };
-            original = { x: center.x, y: center.y - halfHeight };
+            // original = { x: center.x, y: center.y - halfHeight };
             console.log(center);
 
             var rotateAtCenter = { x: halfWdith + 20, y: halfHeight + 20 };
             rotateOriginal = getPageCoordinate(rotateAtCenter, center);
+            original = rotateOriginal;
 
-            $r.css({ left: rotateOriginal.x - 10 + "px", top: rotateOriginal.y - 10 + "px" });//ºıµÙ◊‘º∫øÌ ∏ﬂµƒ“ª∞Î£¨»√‘≠µ„ø…“‘∂‘∆Î
+            $r.css({ left: rotateOriginal.x - 10 + "px", top: rotateOriginal.y - 10 + "px" });//ÂáèÊéâËá™Â∑±ÂÆΩ È´òÁöÑ‰∏ÄÂçäÔºåËÆ©ÂéüÁÇπÂèØ‰ª•ÂØπÈΩê
 
             var tanr = rect.height / rect.width;
             var cosr = Math.sqrt(1 / (Math.pow(tanr, 2) + 1));
@@ -62,6 +79,7 @@
             var r = Math.sqrt(Math.pow(rect.width / 2, 2) + Math.pow(rect.height / 2));
             var r = r + 10;
         };
+
         $(function () {
             adjustRotatePosition($("#box1", 0));
             $(document).on("mousemove", function (e) {
@@ -71,12 +89,15 @@
             $(document).on("mousedown", function (e) {
                 var newP = { x: e.pageX, y: e.pageY };
                 var angle = findAngle(original, center, newP);
-                angle = angle - 45;
+
+                //if (newP.x < center.x) {
+                //    angle = 360 - angle + 45;
+                //}
+                //else {
+
                 $("#angle1").html(angle);
-                if (newP.x < center.x) {
-                    angle = 360 - angle;
-                }
-                
+                //     }
+
                 $("#angle2").html(angle);
                 $("#box1").css("transform", "rotate(" + angle + "deg)");
             })
@@ -94,7 +115,7 @@
 
     <div id="rotate" style="width: 20px; height: 20px; left: 100px; top: 50px; position: absolute">
         <div style="width: 20px; height: 20px; background-color: blue; position: absolute; top: 0; left: 0"></div>
-        <div style="position: absolute; top: -20px; left: -50px; width: 40px; height: 30px; background-color: yellow">0 °„</div>
+        <div style="position: absolute; top: -20px; left: -50px; width: 40px; height: 30px; background-color: yellow">0 ¬∞</div>
         <div style="width: 20px; height: 20px; background-color: red;"></div>
     </div>
 
