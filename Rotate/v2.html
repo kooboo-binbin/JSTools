@@ -2,18 +2,7 @@
 <head>
     <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
     <script>
-        function findRadin(a, b, c) {
-            var ab = Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
-            var bc = Math.sqrt(Math.pow(b.x - c.x, 2) + Math.pow(b.y - c.y, 2));
-            var ac = Math.sqrt(Math.pow(c.x - a.x, 2) + Math.pow(c.y - a.y, 2));
-            return Math.acos((bc * bc + ab * ab - ac * ac) / (2 * bc * ab));
-        };
-        function findAngle(a, b, c) {
-            var radin = findRadin(a, b, c);
-            return angle = Math.round(radin / Math.PI * 180);
-        };
-        var angle = findAngle({ x: 4, y: 0 }, { x: 2, y: 2 }, { x: 0, y: 0 });
-        //var angle = findAngle({ x: 4, y: 0 }, { x: 2, y: 2 }, { x: 4, y: 2 });
+
 
         function findVectorRadin(v1, v2) {
             var cos = (v1.x * v2.x + v1.y * v2.y) / (Math.sqrt(v1.x * v1.x + v1.y * v1.y) * Math.sqrt(v2.x * v2.x + v2.y * v2.y));
@@ -21,8 +10,17 @@
         };
 
         function findVectorAngle(v1, v2) {
-            var radin = findVerctorRadin(v1,v2);
+            var radin = findVectorRadin(v1, v2);
             return angle = Math.round(radin / Math.PI * 180);
+        };
+
+        var angleLargerThanPi = function (v1, v2) {
+            var temp = v1.x * v2.y - v2.x * v1.y;
+            return (temp < 0);
+        };
+
+        var getVector = function (p, center) {
+            return { x: p.x - center.x, y: p.y - center.y };
         };
 
         var angle2 = findVectorAngle({ x: -2, y: 2 }, { x: 2, y: 2 });
@@ -48,9 +46,8 @@
             return { x: p.x + center.x, y: center.y - p.y };
         };
 
-        var isPointOnLeft = function (a, b, c) {
 
-        };
+
 
         var center = null;
 
@@ -88,12 +85,12 @@
 
             $(document).on("mousedown", function (e) {
                 var newP = { x: e.pageX, y: e.pageY };
-                var angle = findAngle(original, center, newP);
-
-                //if (newP.x < center.x) {
-                //    angle = 360 - angle + 45;
-                //}
-                //else {
+                var newV = getVector(newP, center);
+                var oldV = getVector(original, center);
+                angle = findVectorAngle(newV, oldV);
+                if (angleLargerThanPi(oldV, newV)) {
+                    angle = 360 - angle;
+                }
 
                 $("#angle1").html(angle);
                 //     }
