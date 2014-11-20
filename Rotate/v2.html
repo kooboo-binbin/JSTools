@@ -22,21 +22,17 @@
         var crossProduct = function (v) {
             return Math.sqrt(v.x * v.x + v.y * v.y);
         };
+
         var getVector = function (p, center) {
             return { x: p.x - center.x, y: p.y - center.y };
         };
 
-        var rotateVector = function (vector, theta) {
-            var nx = vector.x * Math.cos(theta) - vector.y * Math.sin(theta);
-            var ny = vector.y * Math.cos(theta) - vector.x * Math.sin(theta);
-            return { x: nx, y: ny };
-        };
         var getPoint = function (vector, center) {
             return { x: vector.x + center.x, y: vector.y + center.y };
         };
-        var angle2 = findVectorAngle({ x: -2, y: 2 }, { x: 2, y: 2 });
+        //var angle2 = findVectorAngle({ x: -2, y: 2 }, { x: 2, y: 2 });
 
-        alert(angle2);
+        //alert(angle2); it is 90
 
 
 
@@ -72,7 +68,7 @@
             var halfHeight = rect.height / 2;
             center = { x: rect.left + halfWdith, y: rect.top + halfHeight };
 
-            var rotateAtCenter = { x: halfWdith + 20, y: halfHeight + 20 };
+            var rotateAtCenter = { x: halfWdith + 30, y: halfHeight + 30 };
             length = crossProduct(rotateAtCenter);
             original = getPageCoordinate(rotateAtCenter, center);
 
@@ -82,32 +78,37 @@
         };
 
         $(function () {
+            var rotating = false;
             adjustRotatePosition($("#box1", 0));
             $(document).on("mousemove", function (e) {
-                $("#pageCoordinate").html(e.pageX + " " + e.pageY);
+                if (rotating) {
+                    var newP = { x: e.pageX, y: e.pageY };
+                    var newV = getVector(newP, center);
+                    var oldV = getVector(original, center);
+                    angle = findVectorAngle(newV, oldV);
+
+                    var newLength = crossProduct(newV);
+                    var newX = newV.x * length / newLength;
+                    var newY = newV.y * length / newLength;
+
+                    var r = getPoint({ x: newX, y: newY }, center);
+                    var $r = $("#rotate");
+                    $r.css({ left: r.x - 10 + "px", top: r.y - 10 + "px" });
+                    if (angleLargerThanPi(oldV, newV)) {
+                        angle = 360 - angle;
+                    }
+                    $("#angle1").html(angle);
+                    $("#vector1").html(newV.x + " " + newV.y);
+                    $("#box1").css("transform", "rotate(" + angle + "deg)");
+                }
             });
 
-            $(document).on("mousedown", function (e) {
-                var newP = { x: e.pageX, y: e.pageY };
-                var newV = getVector(newP, center);
-                var oldV = getVector(original, center);
-                angle = findVectorAngle(newV, oldV);
-
-                var newLength = crossProduct(newV);
-                var newX = newV.x * length / newLength;
-                var newY = newV.y * length / newLength;
-
-                var r = getPoint({ x: newX, y: newY }, center);
-                var $r = $("#rotate");
-                $r.css({ left: r.x - 10 + "px", top: r.y - 10 + "px" });
-                if (angleLargerThanPi(oldV, newV)) {
-                    angle = 360 - angle;
-                }
-                $("#angle1").html(angle);
-                $("#vector1").html(newV.x + " " + newV.y);
-                $("#box1").css("transform", "rotate(" + angle + "deg)");
+            $(document).on("mousedown", "#rotate", function (e) {
+                rotating = true;
             })
-
+            $(document).on("mouseup", "", function (e) {
+                rotating = false;
+            })
         });
     </script>
 </head>
