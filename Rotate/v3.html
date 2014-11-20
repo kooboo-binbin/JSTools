@@ -1,0 +1,162 @@
+﻿<html>
+<head>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script>
+
+
+        function findVectorRadin(v1, v2) {
+            var cos = (v1.x * v2.x + v1.y * v2.y) / (crossProduct(v1) * crossProduct(v2));
+            return Math.acos(cos);
+        };
+
+        function findVectorAngle(old, v) {
+            var radin = findVectorRadin(old, v);
+            angle = Math.round(radin / Math.PI * 180);
+            if (angleLargerThanPi(old, v)) {
+                angle = 360 - angle;
+            }
+            return angle;
+        };
+
+        var angleLargerThanPi = function (v1, v2) {
+            var temp = v1.x * v2.y - v2.x * v1.y;
+            return (temp < 0);
+        };
+
+        var crossProduct = function (v) {
+            return Math.sqrt(v.x * v.x + v.y * v.y);
+        };
+
+        var getVector = function (p, center) {
+            return { x: p.x - center.x, y: center.y - p.y };// y is different
+        };
+
+        var getPoint = function (vector, center) {
+            return { x: vector.x + center.x, y: center.y - vector.y };
+        };
+
+        var vectorRatate = function (v, radians) {
+            var cos = Math.cos(radians);
+            var sin = Math.sin(radians);
+            var nx = cos * v.x - sin * v.y;
+            var ny = sin * v.x + cos * v.y;
+            return { x: nx, y: ny };
+        };
+
+
+        //var angle2 = findVectorAngle({ x: -2, y: 2 }, { x: 2, y: 2 });
+
+        //alert(angle2); it is 90
+
+
+
+        var getRectangle = function ($e) {
+            var width = $e.css("width");
+            var height = $e.css("height");
+            var top = $e.css("top");
+            var left = $e.css("left");
+
+            var widthF = parseFloat(width);
+            var heightF = parseFloat(height);
+            var topF = parseFloat(top);
+            var leftF = parseFloat(left);
+            return { top: topF, left: leftF, width: widthF, height: heightF };
+        }
+
+
+
+
+        var centerP = null;
+        var length = null;
+        var iconV = null;
+
+        var show = function ($e) {
+            var rect = getRectangle($e);
+            var $r = $("#rotate");
+
+            var halfWdith = (rect.width / 2);
+            var halfHeight = rect.height / 2;
+            centerP = { x: rect.left + halfWdith, y: rect.top + halfHeight };
+
+            iconV = { x: halfWdith + 30, y: halfHeight + 30 };
+            var iconP = getPoint(iconV, centerP);
+
+
+            var length = crossProduct(iconV);
+
+            var degree = 280;
+            if (degree < 180) {
+                degree = -degree;
+            }
+            else {
+                degree = 360 - degree;
+            }
+            var theta = degree * Math.PI / 180;
+
+            var v = vectorRatate(iconV, theta);
+
+            iconP = getPoint(v, centerP);
+            $r.css({ left: iconP.x - 10 + "px", top: iconP.y - 10 + "px" });//减掉自己宽 高的一半，让原点可以对齐
+
+
+        };
+
+        var update = function () {
+
+        };
+
+        $(function () {
+            var rotating = false;
+            show($("#box1"));
+            $(document).on("mousemove", function (e) {
+                if (rotating) {
+                    var newP = { x: e.pageX, y: e.pageY };
+                    var newV = getVector(newP, centerP);
+
+                    angle = findVectorAngle(newV, iconV);
+
+                    var oldLength = crossProduct(iconV);
+                    var newLength = crossProduct(newV);
+                    var newX = newV.x * oldLength / newLength;
+                    var newY = newV.y * oldLength / newLength;
+
+                    var r = getPoint({ x: newX, y: newY }, centerP);
+                    var $r = $("#rotate");
+                    $r.css({ left: r.x - 10 + "px", top: r.y - 10 + "px" });
+
+                    $("#angle1").html(angle);
+                    $("#vector1").html(newV.x + " " + newV.y);
+                    $("#box1").css("transform", "rotate(" + angle + "deg)");
+                }
+
+            });
+
+            $(document).on("mousedown", "#rotate", function (e) {
+                rotating = true;
+            })
+            $(document).on("mouseup", "", function (e) {
+                rotating = false;
+            })
+        });
+    </script>
+</head>
+<body>
+    <div id="box1" style="width: 200px; height: 200px; position: absolute; left: 300px; top: 300px; background-color: slateblue">
+        <div style="height: 3px; width: 100%; position: absolute; left: 0px; top: 100px; background-color: orange"></div>
+        <div style="height: 200px; width: 3px; position: absolute; left: 100px; top: 0px; background-color: azure"></div>
+        hello world
+    </div>
+
+
+    <div id="rotate" style="width: 20px; height: 20px; left: 100px; top: 50px; position: absolute">
+        <div style="width: 20px; height: 20px; background-color: blue; position: absolute; top: 0; left: 0"></div>
+        <div style="position: absolute; top: -20px; left: -50px; width: 40px; height: 30px; background-color: yellow">0 °</div>
+        <div style="width: 20px; height: 20px; background-color: red;"></div>
+    </div>
+
+    <div id="pageCoordinate">00</div>
+    <div id="angle1">0</div>
+    <div id="vector1">0</div>
+</body>
+
+</html>
