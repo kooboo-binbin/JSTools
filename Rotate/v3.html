@@ -2,6 +2,15 @@
 <head>
     <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
     <script>
+        $.fn.originalCss = function (name) {
+            var style = this.attr("style");
+            var reg = new RegExp(name + ":(\\s{0,1})(.*?);");
+            var temp = reg.exec(style);
+            if (temp != null && temp.length == 3) {
+                return temp[2];
+            }
+            return "";
+        }
 
 
         function findVectorRadin(v1, v2) {
@@ -33,6 +42,17 @@
 
         var getPoint = function (vector, center) {
             return { x: vector.x + center.x, y: center.y - vector.y };
+        };
+
+        var calculateTheta = function (degree) {
+            if (degree < 180) {
+                degree = -degree;
+            }
+            else {
+                degree = 360 - degree;
+            }
+            var theta = degree * Math.PI / 180;
+            return theta;
         };
 
         var vectorRatate = function (v, radians) {
@@ -84,18 +104,19 @@
 
             var length = crossProduct(iconV);
 
-            var degree = 280;
-            if (degree < 180) {
-                degree = -degree;
+            var transform = $e.originalCss("transform");
+            console.log("transform" + transform);
+            var match = /rotate\((\d{1,3})deg\)/.exec(transform);
+            if (match != null && match.length == 2) {
+                var angle = parseFloat(match[1]);
+                $("#rotate > .degree").html(angle + "°");
+                var theta = calculateTheta(angle);
+                var v = vectorRatate(iconV, theta);
+                iconP = getPoint(v, centerP);
             }
-            else {
-                degree = 360 - degree;
-            }
-            var theta = degree * Math.PI / 180;
 
-            var v = vectorRatate(iconV, theta);
 
-            iconP = getPoint(v, centerP);
+
             $r.css({ left: iconP.x - 10 + "px", top: iconP.y - 10 + "px" });//减掉自己宽 高的一半，让原点可以对齐
 
 
@@ -127,6 +148,7 @@
                     $("#angle1").html(angle);
                     $("#vector1").html(newV.x + " " + newV.y);
                     $("#box1").css("transform", "rotate(" + angle + "deg)");
+                    $("#rotate > .degree").html(angle + "°");
                 }
 
             });
@@ -141,16 +163,16 @@
     </script>
 </head>
 <body>
-    <div id="box1" style="width: 200px; height: 200px; position: absolute; left: 300px; top: 300px; background-color: slateblue">
+    <div id="box1" style="width: 200px; height: 200px; position: absolute; left: 300px; top: 300px; background-color: slateblue; transform: rotate(35deg);">
         <div style="height: 3px; width: 100%; position: absolute; left: 0px; top: 100px; background-color: orange"></div>
         <div style="height: 200px; width: 3px; position: absolute; left: 100px; top: 0px; background-color: azure"></div>
         hello world
     </div>
 
 
-    <div id="rotate" style="width: 20px; height: 20px; left: 100px; top: 50px; position: absolute">
+    <div id="rotate" style="width: 20px; height: 20px; left: 100px; top: 50px; position: absolute;">
         <div style="width: 20px; height: 20px; background-color: blue; position: absolute; top: 0; left: 0"></div>
-        <div style="position: absolute; top: -20px; left: -50px; width: 40px; height: 30px; background-color: yellow">0 °</div>
+        <div class="degree" style="position: absolute; top: -20px; left: -50px; width: 40px; height: 30px; background-color: yellow">0 °</div>
         <div style="width: 20px; height: 20px; background-color: red;"></div>
     </div>
 
