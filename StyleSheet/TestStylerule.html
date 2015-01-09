@@ -1,0 +1,273 @@
+<html>
+<head>
+    <link href="custom.css" rel="stylesheet" />
+    <script type="text/javascript" src="http://lib.sinaapp.com/js/jquery/1.7.2/jquery.min.js"></script>
+</head>
+<body>
+    <div>
+        <div class="bold"></div>
+        <div class="italic"></div>
+        <div id="divBefore"></div>
+
+        <button id="btnTest">test</button>
+        <div id="divAfter"></div>
+    </div>
+    <script type="text/javascript">
+        var StyleSheet = function () {
+            var self = this;
+            var sheet = null;
+
+            self.getCustom = function () {
+                if (sheet == null) {
+                    var doc = document;
+                    for (var i in doc.styleSheets) {
+                        var temp = doc.styleSheets[i];
+                        if (temp.href.indexOf("custom.css") != -1) {
+                            sheet = temp;
+                            break;
+                        }
+                    }
+                }
+                return sheet;
+            };
+
+            self.updateRule = function (selector, declaration) {
+                var rules = self.getCustom().cssRules;
+                var index = -1;
+                for (var i in rules) {
+                    var rule = rules[i];
+                    if (rule.selectorText && rule.selectorText == selector) {
+                        index = i;
+                    };
+                }
+
+                if (index != -1) {
+                    var style = rules[index].style;
+                    for (var i = style.length - 1; i >= 0; i--) {
+                        var name = style[i];
+                        style.removeProperty(name);
+                    }
+                    for (var i in declaration) {
+                        style.setProperty(i, declaration[i]);
+                    }
+                }
+                else {
+                    var temp = "";
+                    for (var i in declaration) {
+                        temp += i + ":" + declaration[i] + ";\r\n";
+                    }
+                    var cssText = "{0} {{1}}".format(selector, temp);
+                    self.getCustom().insertRule(cssText, rules.length);
+                }
+            };
+
+            self.getRule = function (selector) {
+                var rules = self.getCustom().cssRules;
+                var index = -1;
+                for (var i in rules) {
+                    var rule = rules[i];
+                    if (rule.selectorText && rule.selectorText == selector) {
+                        index = i;
+                    }
+                }
+                if (index == -1) {
+                    return null;
+                }
+                else {
+                    return rules[index];
+                }
+            };
+
+            self.updateProperty = function (selector, name, value) {
+                var rule = self.getRule(selector);
+                if (rule) {
+                    rule.style.setProperty(name, value);
+                } else {
+                    var rules = self.getCustom().cssRules;
+                    var cssText = "{0} {{1}:{2};}".format(selector, name, value);
+                    self.getCustom().insertRule(cssText, rules.length);
+                }
+            };
+
+            self.removeProperty = function (selector, name) {
+                var rule = self.getRule(selector);
+                if (rule) {
+                    rule.style.removeProperty(name);
+                }
+            };
+
+            self.getProperty = function (selector, name) {
+                var rule = self.getRule(selector);
+                if (rule) {
+                    rule.style.getPropertyValue(name, value);
+                } else {
+                    return null;
+                }
+            };
+
+            self.deleteRule = function (selector) {
+                var rules = self.getCustom().cssRules;
+                var indexes = [];
+                for (var i in rules) {
+                    var rule = rules[i];
+                    if (rule.selectorText && rule.selectorText == selector) {
+                        indexes.push(i);
+                    };
+                }
+                var times = 0;
+                for (var index in indexes) {
+                    self.getCustom().deleteRule(index - times);
+                    times++;
+                }
+            };
+
+            self.getRulesById = function (id) {
+                var selector = "#{0}".format(id);
+                var rules = self.getCustom().cssRules;
+                var myRules = [];
+                for (var i in rules) {
+                    var rule = rules[i];
+                    if (rule.selectorText && rule.selectorText.indexOf(selector) != -1) {
+                        myRules.push(rule);
+                    };
+                }
+                return myRules;
+            };
+
+            self.updateRulesById = function (id, rules) {
+                for (var i in rules) {
+                    self.updateRuleByRule(rules[i]);
+                }
+            };
+
+            self.updateRuleByRule = function (nRule) {
+                var rules = self.getCustom().cssRules;
+                var index = -1;
+                for (var i in rules) {
+                    var rule = rules[i];
+                    if (rule.selectorText && rule.selectorText == nRule.selectorText) {
+                        index = i;
+                    };
+                }
+
+                if (index != -1) {
+                    var style = rules[index].style;
+                    for (var i = style.length - 1; i >= 0; i--) {
+                        var name = style[i];
+                        style.removeProperty(name);
+                    }
+                    for (var i in rule.style) {
+                        style.setProperty(i, nRule.style.getPropertyValue(i));
+                    }
+                }
+                else {
+                    self.getCustom().insertRule(nRule.cssText, rules.length);
+                }
+            };
+
+            self.deleteRulesById = function (id) {
+
+                var selector = "t"
+                var rules = self.getCustom().cssRules;
+
+                var indexes = [];
+                for (var i in rules) {
+                    var rule = rules[i];
+                    if (rule.selectorText && rule.selectorText.indexOf(selector) != -1) {
+                        indexes.push(i);
+                    };
+                }
+                var times = 0;
+                for (var i in indexes) {
+                    var index = indexes[i] - times;
+                    console.log(index);
+
+                    self.getCustom().deleteRule(index);
+                    times++;
+                }
+                console.log(indexes);
+
+            };
+
+            self.getStyle = function (selector) {
+                var rules = self.getCustom().cssRules;
+                for (var i in rules) {
+                    var rule = rules[i];
+                    if (rule.selectorText && rule.selectorText.indexOf(selector) != -1) {
+                        return rule.style;
+                    };
+                };
+                return null;
+            }
+
+            self.getAllCssText = function () {
+                var cssText = "";
+                var rules = self.getCustom().cssRules;
+                for (var i in rules) {
+                    var rule = rules[i];
+                    if (rule.selectorText) {
+                        cssText += rule.cssText + "\r\n";
+                    }
+                }
+                return cssText;
+            };
+
+
+            self.parseShadow = function (cssText) {
+                if (cssText) {
+                    var p = /(-{0,1}\d{1,3}px{0,1})\s(-{0,1}\d{1,3}px{0,1})\s(-{0,1}\d{1,3}px{0,1})\s(-{0,1}\d{1,3}px{0,1})\s(rgb.*?\))/.exec(cssText);
+                    return { h: parseFloat(p[1]), v: parseFloat(p[2]), spread: parseFloat(p[3]), blur: parseFloat(p[4]), color: p[5] };
+                }
+                return {};
+            };
+
+            self.parseBorder = function (border) {
+                if (border) {
+                    var p = /(\d{1,3}px{0,1})\s(\w{4,10})\s(rgb.*?\))/.exec(border);
+                    return { width: parseFloat(p[1]), style: p[2], color: p[3] };
+                }
+                return { width: 0, style: "solid", color: "rgba(0,0,0,1)" };
+            };
+
+            self.parseBackground = function (background) {
+                if (background) {
+                    var temp = background.split(" ");
+                    var color = temp[5] + " " + temp[6] + " " + temp[7] + " ";
+                    return { color: color };
+                }
+                return { color: "rgba(0,0,0)" };
+            };
+
+            self.parseBorderRadius = function (cssText) {
+                if (cssText) {
+                    var temp = cssText.replace(/px/g, "").split(" ");
+                    switch (temp.length) {
+                        case 1:
+                            return { leftTop: temp[0], rightTop: temp[0], rightBottom: temp[0], leftBottom: temp[0], syncAll: true };
+                        case 2:
+                            return { leftTop: temp[0], rightTop: temp[1], rightBottom: temp[0], leftBottom: temp[1], syncAll: false };
+                        case 3:
+                            return { leftTop: temp[0], rightTop: temp[1], rightBottom: temp[2], leftBottom: temp[1], syncAll: false };
+                        case 4:
+                            return { leftTop: temp[0], rightTop: temp[1], rightBottom: temp[2], leftBottom: temp[3], syncAll: false };
+                    }
+                }
+                return { leftTop: 0, rightTop: 0, leftBottom: 0, rightBottom: 0, syncAll: true };
+            };
+
+        };
+
+        var styleSheet = new StyleSheet();
+        $(function () {
+            $("#btnTest").click(function () {
+                $("#divBefore").html(styleSheet.getAllCssText());
+                styleSheet.deleteRulesById();
+
+                $("#divAfter").html(styleSheet.getAllCssText());
+                alert('hello test');
+            })
+        })
+    </script>
+</body>
+
+</html>

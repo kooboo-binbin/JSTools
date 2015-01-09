@@ -1,0 +1,39 @@
+a {
+    color: red;
+}
+
+.t1 {
+    color: green;
+}
+
+.t3 {
+    color: yellow;
+}
+
+.b1 {
+    color: azure;
+}
+
+.t4 {
+    color: yellow;
+}
+
+.b2 {
+    font-size: small;
+}
+
+.t4:hover {
+    color: red;
+}
+
+.b3 {
+    color: black;
+}
+
+.t5 {
+    color: yellow;
+}
+
+.t6 {
+    color: yellow;
+}
