@@ -1,0 +1,33 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script>
+        var Animial = function () {
+            var self = this;
+            var inner1 = function () {
+                alert("animail.inner1");
+            };
+            self.Fly= function(){
+                inner1();
+            };
+        };
+
+        var Pig = function () {
+            var self = this;
+            var inner1 = function () {
+                alert("pig.inner1");
+            };
+            Animial.apply(this, []);
+        };
+
+        var pig = new Pig();
+        pig.Fly();
+
+    </script>
+</head>
+<body>
+</body>
+</html>

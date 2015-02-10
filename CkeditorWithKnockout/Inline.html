@@ -1,0 +1,101 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+    <script src="http://cdn.ckeditor.com/4.4.6/standard/ckeditor.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.2.0/knockout-min.js"></script>
+    <style>
+        .richtextbox {
+            background: none repeat scroll 0 0 #fafafa;
+            border: 1px solid #d9d9d9;
+            border-radius: 3px;
+            box-shadow: 0 2px 1px #f2f2f2 inset;
+            height: 200px;
+            overflow-y: scroll;
+            width: 87%;
+        }
+    </style>
+</head>
+<body>
+    results:
+    <div data-bind="html: result"></div>
+    <br />
+    <br />
+    <hr />
+    <!-- ko foreach:contents -->
+    <div class="richtextbox" data-bind="attr: { id: id }, ckeditor: value "></div>
+    <hr />
+    <!-- /ko -->
+    <button id="btnEdit" data-bind="click: getContent">Get content</button>
+    <script>
+        ko.bindingHandlers.ckeditor = {
+            init: function (element, valueAccessor, allBindingsAccessor, viewModel) {
+                var value = valueAccessor();
+                var valueUnwrapped = ko.unwrap(value);
+                var allBindings = allBindingsAccessor();
+                var $element = $(element);
+
+                var options = allBindingsAccessor().ckeditorOptions || {
+                    width: '400px',
+                    toolbar: [
+                       ['Styles', 'Format', 'Font', 'FontSize'],
+                       ['NumberedList', 'BulletedList', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+                       ['Bold', 'Italic', 'Underline', 'StrikeThrough', '-', 'Undo', 'Redo', '-', 'Cut', 'Copy', 'Paste', 'Find', 'Replace', '-', 'Outdent', 'Indent'],
+                       ['Image', 'Table', '-', 'Link', 'TextColor', 'BGColor', 'Source', 'Maximize']
+                    ]
+                };
+
+                $element.attr('contenteditable', true);
+
+                if (ko.isObservable(value)) {
+                    var isSubscriberChange = false;
+                    var isEditorChange = false;
+                    $element.html(value());
+                    //$element.ckeditor(options); //need ckeditor jquery adapter
+
+                    $element.on('blur', function () {
+                        if (!isSubscriberChange) {
+                            isEditorChange = true;
+                            value($element.html());
+                            isEditorChange = false;
+                        }
+                    });
+
+                    value.subscribe(function (newValue) {
+                        if (!isEditorChange) {
+                            isSubscriberChange = true;
+                            $element.html(newValue);
+                            isSubscriberChange = false;
+                        }
+                    });
+                }
+            }
+        };
+        $(function () {
+            var ViewModel = function () {
+                var self = this;
+                self.result = ko.observable("");
+                var temp1 = { id: "aa", value: ko.observable("click here to edit") };
+                var temp2 = { id: "aab", value: ko.observable("click here to edit") };
+                var temps = [temp1, temp2
+                ];
+                self.contents = ko.observableArray(temps);
+
+                self.getContent = function () {
+                    var result = temp1.value() + "<br />" + temp2.value();
+                    self.result(result);
+                };
+                temp1.value.subscribe(function (value) {
+                    self.result(value);
+                });
+
+
+            };
+            ko.applyBindings(new ViewModel());
+        })
+    </script>
+</body>
+</html>
