@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+    <script src="http://cdn.ckeditor.com/4.4.6/standard/ckeditor.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.2.0/knockout-min.js"></script>
+
+</head>
+<body>
+    <div data-bind="with: instance">
+        <span data-bind="text: name"></span>
+        <button data-bind="click: call">call me</button>
+    </div>
+    <button data-bind="click: change">Change</button>
+    <script>
+
+        $(function () {
+            var Apple = function () {
+                var self = this;
+                self.name = "Apple";
+                self.call = function () {
+                    alert("I am apple");
+                };
+            };
+
+            var Orange = function () {
+                var self = this;
+                Apple.apply(self, null);
+                self.name = "Orange";
+                self.call = function () {
+                    alert('I am orange');
+                };
+            };
+
+            var ViewModel = function () {
+                var self = this;
+                self.instance = ko.observable(new Apple());
+                var i = 0;
+                self.change = function () {
+                    var o = null;
+                    if (i == 0) {
+                        o = new Orange();
+                        i = 1;
+                    }
+                    else {
+                        i = 0;
+                        o = new Apple();
+                    }
+                    self.instance(o);
+                };
+            };
+            ko.applyBindings(new ViewModel());
+        })
+    </script>
+   Some times tempate is better than this one
+</body>
+</html>
