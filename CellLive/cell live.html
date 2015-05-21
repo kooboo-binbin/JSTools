@@ -1,0 +1,131 @@
+<html>
+<head>
+    <style>
+        #container {
+            width: 400px;
+            height: 400px;
+            background-color: black;
+            padding: 0;
+        }
+
+        li {
+            float: left;
+            width: 18px;
+            margin: 1px;
+            height: 18px;
+            list-style: none;
+            display: block;
+        }
+
+        .live {
+            background-color: green;
+        }
+    </style>
+    <script src="http://lib.sinaapp.com/js/jquery/1.9.1/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript">
+        //1． 如果一个细胞周围有3个细胞为生（一个细胞周围共有8个细胞），则该细胞为生（即该细胞若原先为死，则转为生，若原先为生，则保持不变） 。
+        //2． 如果一个细胞周围有2个细胞为生，则该细胞的生死状态保持不变；
+        //3． 在其它情况下，该细胞为死（即该细胞若原先为生，则转为死，若原先为死，则保持不变）
+        var CellGame = function () {
+            var self = this;
+            var data = [];
+
+            self.init = function () {
+                var html = "";
+                for (var i = 0; i < 400; i++) {
+                    html += "<li id='li" + i + "'></li>"
+                    data.push(false);
+                }
+                $("#container").html(html);
+                self.initLiveCells();
+                sync();
+                window.setInterval(start, 1000);
+            };
+            self.initLiveCells = function () {
+                for (var i = 0; i < 50; i++) {
+                    var j = Math.round(Math.random() * 400);
+                    data[j] = true;
+                }
+            };
+            var getScope = function (i, j) {
+                var scope = [];
+                var first = (i - 1) * 20 + j - 1;
+                scope.push(first);
+                scope.push(first + 1);
+                scope.push(first + 2);
+                var level2 = i * 20 + j - 1;
+                scope.push(level2);
+                scope.push(level2 + 2);
+                var level3 = (i + 1) * 20 + j - 1;
+                scope.push(level3);
+                scope.push(level3 + 1);
+                scope.push(level3 + 2);
+                return scope;
+            };
+            var getAmout = function (scope, old) {
+                var amout = 0;
+                for (var i in scope) {
+                    var index = scope[i];
+                    if (index >= 0 && index < 400) {
+                        if (old[index]) {
+                            amout++;
+                        }
+                    }
+                }
+                return amout;
+            };
+            var updateCell = function (i, j, old) {
+                var scope = getScope(i, j);
+                //console.log(scope);
+
+                var amout = getAmout(scope, old);
+                var index = i * 20 + j;
+                if (amout == 3) {
+                    if (!old[index]) {
+                        data[index] = true;
+                    }
+                }
+                else if (amout == 2) {
+
+                }
+                else {
+                    data[index] = false;
+                }
+            };
+            var update = function () {
+                var old = data.slice(0);
+                for (var i = 0; i < 20; i++) {
+                    for (var j = 0; j < 20; j++) {
+                        updateCell(i, j, old);
+                    }
+                }
+            };
+
+            var start = function () {
+                update();
+                sync();
+            };
+            var sync = function () {
+                for (var i in data) {
+                    if (data[i]) {
+                        $("#li" + i).addClass("live");
+                    }
+                    else {
+                        $("#li" + i).removeClass("live");
+                    }
+                }
+            }
+        }
+        var cellGame = new CellGame();
+        $(function () {
+            cellGame.init();
+        })
+
+    </script>
+</head>
+<body>
+    <ul id="container">
+    </ul>
+</body>
+
+</html>
