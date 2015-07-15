@@ -13,12 +13,13 @@ namespace RedisPresureTest
         static void Main(string[] args)
         {
 
-            
 
 
-            for (int i = 0; i < 50; i++)
+            var testor = new TestorBig();
+           
+            for (int i = 0; i < 100; i++)
             {
-                var testor = new TestorBig();
+               
                 testor.TaskName = "task" + i;
                 var thread = new Thread(new ThreadStart(testor.Test));
                 thread.Start();

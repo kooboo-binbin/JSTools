@@ -11,7 +11,8 @@ namespace RedisPresureTest
     {
         protected static Random rnd = new Random();
         //protected PooledRedisClientManager RedisManager = new PooledRedisClientManager(0, "127.0.0.1:6379");
-        protected PooledRedisClientManager RedisManager = new PooledRedisClientManager(0, "127.0.0.1:6379");
+        //protected PooledRedisClientManager RedisManager = new PooledRedisClientManager(1, 1, "192.168.1.9:2819");
+        protected PooledRedisClientManager RedisManager = new PooledRedisClientManager(0, "104.45.24.164:6379");
         public abstract void Test();
         public string TaskName { get; set; }
         public virtual List<ProductModel> GetProducts()
@@ -24,7 +25,7 @@ namespace RedisPresureTest
             return list;
         }
 
-        public ProductModel GetProduct()
+        public static ProductModel GetProduct()
         {
             var model = new ProductModel();
             model.ActualPrice = 5646;

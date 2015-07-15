@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Include="AbstractTestor.cs" />
     <Compile Include="CachedValue.cs" />
+    <Compile Include="TestorLongKey.cs" />
     <Compile Include="Testor2.cs" />
     <Compile Include="Product.cs" />
     <Compile Include="Program.cs" />
