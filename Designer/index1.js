@@ -1,18 +1,12 @@
-var Menu = function (selector, event) {
-    var self = this;
-    self.selector = selector;
-    self.event = event;
-    self.loadFunc = loadFunc;
-    self.saveFunc = saveFunc;
-};
 var menuMenu = {
     selector: "ul>li",
     event: "click",
     items: [
         { name: "", label: "", value: "" },
         {}],
-    show: function () {
+    show: function (e) {
         alert('show Menu');
+        e.preventDefault();
     },
     loadFunc: function () {
         console.log("load");

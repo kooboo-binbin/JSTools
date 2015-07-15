@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link href="index1.css" rel="stylesheet" />
+</head>
+<body class="layout2">
+    <div class="wrapper">
+        <div class="wrapper-inner">
+            <div class="header">
+                <div class="header-bottom">
+                    <div class="wrap">
+                        <div class="widget widget-category-list dropdown">
+                            <ul class="dropdown-content2 widget-content">
+                                <li>
+                                    <a href="http://binbin3.webshop.cn/category/159571/bank">Bank</a>
+                                </li>
+                                <li>
+                                    <a href="http://www.baidu.com">Baidu</a>
+                                </li>
+                                <li>
+                                    <a>click</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="test-2">
+        test 2
+
+    </div>
+    <script src="jquery.min.js"></script>
+    <script src="index1.js"></script>
+    <script>
+        $(function () {
+            for (var i in menus) {
+                var item = menus[i];
+                console.log(item);
+                $(item.selector).on(item.event, item.show);
+            }
+        })
+
+    </script>
+</body>
+</html>
