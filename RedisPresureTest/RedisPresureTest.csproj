@@ -64,6 +64,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Testor1.cs" />
+    <Compile Include="TestorBig.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

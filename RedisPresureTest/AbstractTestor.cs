@@ -10,10 +10,11 @@ namespace RedisPresureTest
     public abstract class AbstractTestor
     {
         protected static Random rnd = new Random();
+        //protected PooledRedisClientManager RedisManager = new PooledRedisClientManager(0, "127.0.0.1:6379");
         protected PooledRedisClientManager RedisManager = new PooledRedisClientManager(0, "127.0.0.1:6379");
         public abstract void Test();
         public string TaskName { get; set; }
-        public List<ProductModel> GetProducts()
+        public virtual List<ProductModel> GetProducts()
         {
             var list = new List<ProductModel>();
             for (int i = 0; i < 20; i++)
