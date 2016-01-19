@@ -12,7 +12,7 @@ namespace RedisPresureTest
         protected static Random rnd = new Random();
         //protected PooledRedisClientManager RedisManager = new PooledRedisClientManager(0, "127.0.0.1:6379");
         //protected PooledRedisClientManager RedisManager = new PooledRedisClientManager(1, 1, "192.168.1.9:2819");
-        protected PooledRedisClientManager RedisManager = new PooledRedisClientManager(100, 3, "104.45.24.164:6379");
+        protected PooledRedisClientManager RedisManager = new PooledRedisClientManager(10, 3, "104.45.24.164:6380");
         public abstract void Test();
         public string TaskName { get; set; }
         public virtual List<ProductModel> GetProducts()

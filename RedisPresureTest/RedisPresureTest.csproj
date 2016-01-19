@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="ServiceStack.Common, Version=3.9.69.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>lib\ServiceStack.Common.dll</HintPath>
@@ -48,6 +51,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>lib\ServiceStack.Text.dll</HintPath>
     </Reference>
+    <Reference Include="StackExchange.Redis">
+      <HintPath>packages\StackExchange.Redis.1.0.481\lib\net45\StackExchange.Redis.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -59,6 +65,9 @@
   <ItemGroup>
     <Compile Include="AbstractTestor.cs" />
     <Compile Include="CachedValue.cs" />
+    <Compile Include="RedisCache.cs" />
+    <Compile Include="RedisCacheTestor.cs" />
+    <Compile Include="TestorGetAll.cs" />
     <Compile Include="TestorLongKey.cs" />
     <Compile Include="Testor2.cs" />
     <Compile Include="Product.cs" />
@@ -69,6 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

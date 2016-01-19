@@ -44,6 +44,7 @@ namespace RedisPresureTest
                     }
                     catch (Exception ex)
                     {
+                        
                         Console.WriteLine("Error" + ex.ToString());
                     }
                 }
